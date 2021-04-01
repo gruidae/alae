@@ -1,6 +1,3 @@
-import sys
-
-
 from subject_item import SubjectDayPeriod
 from subject_item import SubjectTerm
 
@@ -50,6 +47,18 @@ class Subject:
     def terms(self):
         return [term for term in self.__terms]
     
+    def __dict__(self):
+        return {
+            "name":  self.name,
+            "terms": self.terms,
+            "dayPeriods": self.dayPeriods,
+            "credit": self.credit,
+            "graduateSchool": self.graduateSchool,
+            "canTakeLectureInM1": self.__canTakeLectureInM1,
+            "canTakeLectureInM2": self.__canTakeLectureInM2,
+            "capacity": self.capacity
+        }
+    
     def __eq__(self, other):
         if self is other:
             return True
@@ -83,6 +92,16 @@ class Subject:
     
     def __str__(self):
         return self.__name
+    
+    def toJSON(self) -> dict:
+        return {
+            "開講科目名":  self.name,
+            "開講期間": [str(term) for term in self.terms],
+            "曜日・時限": [str(dayPeriod) for dayPeriod in self.dayPeriods],
+            "単位数": self.credit,
+            "開講部局": self.graduateSchool,
+            "定員": self.capacity
+        }
     
     @staticmethod
     def toSubjects(values: list) -> list:

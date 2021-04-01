@@ -1,11 +1,44 @@
 import re
-import sys
-
 
 from enum import Enum
 
 
 _SUBJECT_TERM_SUFFIX = "学期"
+
+
+class ISTMajor:
+    MA  = "情報基礎数学"
+    IPS = "情報数理学"
+    CS  = "コンピュータサイエンス"
+    IS  = "情報システム工学"
+    NW  = "情報ネットワーク学"
+    MM  = "マルチメディア工学"
+    BI  = "バイオ情報工学"
+    
+    __csvFileDict = {
+        MA:  "data/ma.csv",
+        IPS: "data/ips.csv",
+        CS:  "data/cs.csv",
+        IS:  "data/is.csv",
+        NW:  "data/nw.csv",
+        MM:  "data/mm.csv",
+        BI:  "data/bi.csv"   
+    }
+    
+    __majors = [
+        MA, IPS, CS, IS, NW, MM, BI
+    ]
+    
+    @staticmethod
+    def csvFileDict() -> dict:
+        retVal = {}
+        for (key, value) in ISTMajor.__csvFileDict.items(): 
+            retVal[key] = value
+        return retVal
+    
+    @staticmethod
+    def majors() -> list:
+        return [major for major in ISTMajor.__majors]
 
 
 class SubjectTerm(Enum):
