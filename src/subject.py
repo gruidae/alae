@@ -124,6 +124,7 @@ class Subject:
         ] = values
         
         # 型変換
+        graduateSchool = graduateSchool.replace("\\n", "")
         terms: list = SubjectTerm.toTerms(terms)
         dayPeriods: list = SubjectDayPeriod.toDayPeriods(dayPeriods)
         canTakeLectureInM1: bool = (canTakeLectureInM1 == "○")

@@ -1,6 +1,5 @@
-import codecs
 import json
-import pprint
+import time
 import tkinter
 
 from tkinter import ttk
@@ -16,12 +15,14 @@ from subject_item import SubjectTerm
 
 class GUIMain:
     __WIDTH_MIN  = 800
-    __HEIGHT_MIN = 300
+    __HEIGHT_MIN = 250
     
     __BORDER_WIDTH   = 3
     __BUTTON_WIDTH   = 10
     __PULLDOWN_WIDTH = 7
-
+    
+    __RESULT_MAX = 100
+    
     def __init__(self):
         pass
     
@@ -56,26 +57,49 @@ class GUIMain:
             width   = maxLen,
             height  = len(values)
         )
-        combobox.current(0)
         return combobox
     
     
     def __searchSubjects(self):
         majorName = self.__majorCombobox.get()
+        if majorName is None or len(majorName) < 1:
+            self.__finishOutputText.set(
+                "専攻を選択してください．"
+            )
+            return
         fileName  = ISTMajor.csvFileDict()[majorName]
         subjects  = subject_gui_helper.input_subjects(fileName)
-        term      = SubjectTerm.of(self.__termCombobox.get())
-        dayPeriod = SubjectDayPeriod(
-            SubjectDay.of(self.__dayCombobox.get()),
-            int(self.__periodCombobox.get())
-        )
-        results = []  # 検索結果
-        for subject in subjects:     
-            if term not in subject.terms:
-                continue
-            if dayPeriod in subject.dayPeriods:
-                results.append(subject)
+        try:
+            term = SubjectTerm.of(self.__termCombobox.get())
+        except ValueError:
+            term = None
+            dayPeriod = None
+        else:
+            try:
+                dayPeriod = SubjectDayPeriod(
+                    SubjectDay.of(self.__dayCombobox.get()),
+                    int(self.__periodCombobox.get())
+                )
+            except ValueError:
+                dayPeriod = None
         
+        results = []  # 検索結果
+        for subject in subjects:
+            if term is None:
+                pass
+            elif term not in subject.terms:
+                continue
+            if dayPeriod is None or dayPeriod in subject.dayPeriods:
+                results.append(subject)
+        if len(results) > self.__RESULT_MAX:
+            self.__finishOutputText.set(
+                str(self.__RESULT_MAX) + "件を超えました．"
+            )
+            return
+        elif len(results) < 1:
+            self.__finishOutputText.set("受講可能な科目が存在しません．")
+            return
+        # 出力文字列の生成
         jsonText = {
             "専攻": majorName,
             "履修登録期間": str(term),
@@ -84,9 +108,13 @@ class GUIMain:
                 subject.toJSON() for subject in results
             ]
         }
-        with codecs.open("tmp/out.json", "w", "utf-8") as fp:
-            print(json.dumps(jsonText, indent=2), file = fp)
-    
+        self.__finishOutputText.set(
+            "\"tmp/out.json\"に受講可能な科目一覧を保存しました．"
+        )
+        with open("tmp/out.json", "w", encoding = "utf-8") as fp:
+            json.dump(jsonText, fp, indent = 2, ensure_ascii = False)
+        time.sleep(1)
+        
     def main(self):
         self.__root = self.__generateRootWindow(
             "高度教養教育科目（情報科学研究科）",  # title
@@ -151,7 +179,7 @@ class GUIMain:
         )
         self.__periodCombobox = self.__generateCombobox(
             self.__searchQueryFrame,
-            [str(i) for i in range(1, 7)]
+            [str(i) for i in range(7)]
         )
         
         
@@ -172,7 +200,6 @@ class GUIMain:
             self.__topFrame,
             textvariable = self.__finishOutputText
         )
-        self.__result["yscrollcommand"] = scrollbar.set
         
         # レイアウト
         self.__topFrame.pack(side = tkinter.TOP)
