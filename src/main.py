@@ -14,8 +14,8 @@ from subject_item import SubjectTerm
 
 
 class GUIMain:
-    __WIDTH_MIN  = 800
-    __HEIGHT_MIN = 250
+    __WIDTH_MIN  = 650
+    __HEIGHT_MIN = 150
     
     __BORDER_WIDTH   = 3
     __BUTTON_WIDTH   = 10

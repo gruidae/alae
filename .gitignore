@@ -132,6 +132,9 @@ dmypy.json
 # emacs
 *.~
 
+# Mac OS
+.DS_STORE
+
 # original
 tmp
 tmp/*
