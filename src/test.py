@@ -40,5 +40,5 @@ def _cui_main(subjects: list):
 if __name__ == "__main__":
     csvFileName: str = sys.argv[1]
     subjects: list = subject_gui_helper.input_subjects(csvFileName)
-    pprint.pprint(subjects)
+    # pprint.pprint(subjects)
     _cui_main(subjects)    
