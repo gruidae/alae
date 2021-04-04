@@ -41,7 +41,7 @@ def _cui_main(subjects: list):
 
 def _toCSV(subjects: list):
     results = []
-    term: SubjectTerm = SubjectTerm.of("春")
+    term: SubjectTerm = SubjectTerm.of("秋")
     for day in SubjectDay:
         for period in range(0, 7):
             dayPeriod: SubjectDayPeriod = SubjectDayPeriod(day, period)
@@ -64,7 +64,7 @@ def _toCSV(subjects: list):
         ] for subject in results
     ]
     outSubjects.insert(0, ["講義名",  "開講部局","開講期間", "曜日時限", "単位数", "制限人数"])
-    with open("tmp/ordered.csv", "w", encoding="utf-8") as fp:
+    with open("tmp/autumn.csv", "w", encoding="utf-8") as fp:
         writer = csv.writer(fp)
         writer.writerows(outSubjects)
 
